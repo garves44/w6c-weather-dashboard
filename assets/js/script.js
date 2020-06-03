@@ -10,7 +10,7 @@
  * 1. Functions
  *   1.1 getWeather()
  *   1.2 citySearch()
- *   1.3 Time function
+ *   1.3 displayWeather()
  * 
  * 2. Document Ready
  *   2.1 Render Schedule on ready
@@ -27,23 +27,23 @@
 /**
  * 1.1 getWeather()
  */
-var getWeather = function(city) {
+var getWeather = function (city) {
 
-    var apiUrl ="http://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=904755abfca69992b8a848481a87baea";
+    var apiUrl = "api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial" + "&APPID=904755abfca69992b8a848481a87baea";
 
     fetch(apiUrl)
-    .then(function (response){
-        if (response.ok) {
-            response.json().then(function (data){
-                displayWeather(data, city);
-            });
-        } else {
-            alert("Error: " + response.statusText);
-        }
-    })
-    .catch(function(error){
-        alert("Unable to gather weather data!");
-    });
+        .then(function (response) {
+            if (response.ok) {
+                response.json().then(function (data) {
+                    displayWeather(data, city);
+                });
+            } else {
+                alert("Error: " + response.statusText);
+            }
+        })
+        .catch(function (error) {
+            alert("Unable to gather weather data!");
+        });
 };
 
 /**
@@ -54,12 +54,19 @@ var citySearch = function (event) {
     var city = $('#city').value.trim();
 
     if (city) {
-        getUserRepos(city);
-        $('#city').value = "";
+        getWeather(city);
+        city.value = "";
     } else {
         alert("Please enter a city name!");
     }
 
+};
+
+/**
+ * 1.3 displayWeather()
+ */
+var displayWeather = function (weather, city) {
+    
 };
 
 
@@ -137,4 +144,3 @@ var citySearch = function (event) {
 //         repoContainerEl.textContent = "";
 //     }
 // };
-
