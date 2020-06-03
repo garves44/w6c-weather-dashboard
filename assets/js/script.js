@@ -98,15 +98,36 @@ var citySearch = function (event) {
  */
 
 var displayWeather = function (data) {
+    console.log("data.weather.icon", data.weather[0].icon);
+    console.log("data.weather", data.weather[0]);
     var currentDate = moment.unix(data.dt).format("MM/DD/YYYY");
+
+    var iconID = data.weather[0].icon;
+    var iconUrl = `http://openweathermap.org/img/wn/${iconID}@2x.png`;
+
+
+
+
+    var iconEl = $("<img>").attr("alt", "Weather icon").attr("src", iconUrl);
+
+    // iconEl = $("<span>").append(iconEl);
+    console.log("iconEl =",iconEl);
+    
+
+
 
     var weatherEl = document.createElement("div");
     weatherEl.classList = "list-item flex-row justify-space-between align-center";
 
-    var cityDateEl = document.createElement("h2");
-    cityDateEl.classList = "list-item flex-row justify-space-between col-sm"
-    cityDateEl.textContent = `${data.name} ${currentDate} ${data.weather[0].icon}`
-    weatherEl.appendChild(cityDateEl);
+    var cityDateEl = $("<h2>");
+    cityDateEl.addClass("list-item flex-row justify-space-between col-sm").text(`${data.name} ${currentDate}`);
+    cityDateEl.append(iconEl);
+
+    // cityDateEl.classList = "list-item flex-row justify-space-between col-sm"
+    // cityDateEl.textContent = `${data.name} ${currentDate} ${iconEl}`
+    // cityDateEl.append(iconEl);
+    weatherEl.append(cityDateEl);
+    console.log("cityDateEl =", cityDateEl);
 
     var tempEl = document.createElement("div");
     tempEl.classList = "list-item flex-row justify-space-between col-sm"
@@ -135,21 +156,8 @@ var displayWeather = function (data) {
  * 1.5 displayForecast()
  */
 var displayForecast = function (data) {
-    
-
-    // var dateObj = new Date(data.list[0].dt * 1000);
-    // var month = dateObj.getUTCMonth().toString();
-    // var day = dateObj.getUTCDay().toString();
-    // var year = dateObj.getUTCFullYear().toString();
-    // var currentDate = `(${month}/${day}/${year})`;
-    // console.log("currentDate", currentDate);
-    console.log("data = ", data);
-    console.log("data.list = ", data.list);
-    console.log("data.list[0] = ", data.list[0]);
-    console.log("data.list[5] = ", data.list[5]);
-    
-
     for (var i = 0; i < data.list.length; i = i + 8) {
+        // i + 8 because 3 hour increments. want to push 24 hours.
         var currentDate = moment.unix(data.list[i].dt).format("MM/DD/YYYY");
         console.log("for loop has started and is on position", i);
         var forecastEl = document.createElement("div");
@@ -225,7 +233,7 @@ $("#submit-weather").on("click", citySearch);
 //         statusEl.classList = "flex-row align-center";
 
 //         if (repos[i].open_issues_count > 0) {
-//             statusEl.innerHTML = "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issues";
+//             statusEl.innerHTML = "<i class='fas fa-times status-icon icon-danger'></img>" + repos[i].open_issues_count + " issues";
 //         } else {
 //             statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
 //         }
