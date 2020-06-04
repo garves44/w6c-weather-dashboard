@@ -39,10 +39,14 @@ var getWeather = function (city) {
     fetch(apiUrl)
         .then(function (response) {
             if (response.ok) {
-                response.json().then(function (data) {
+                response.json()
+                .then(function (data) {
                     console.log("response ok");
-                    displayWeather(data);
-                });
+                    return displayWeather(data);
+                }).then(function(WeatherResults) {
+                    let {lat, lon} = WeatherResults; 
+                    getUVIndex(lat, lon);
+                }); 
             } else {
                 alert("Error: " + response.statusText);
             }
@@ -103,35 +107,41 @@ var displayWeather = function (data) {
 
     // var uvIndexUrl =
 
-    var weatherEl = $("<div>");
-    weatherEl.addClass("list-item flex-row justify-space-between align-center");
+    var weatherEl = $("<div>")
+    .addClass("list-item flex-row justify-space-between align-center");
+    
 
-    var cityDateEl = $("<h2>");
-    cityDateEl.addClass("list-item flex-row justify-space-between col-sm").text(`${data.name} ${currentDate}`);
+    var cityDateEl = $("<h2>")
+    .addClass("list-item flex-row justify-space-between col-sm")
+    .text(`${data.name} ${currentDate}`);
     cityDateEl.append(getIcon(iconID));
     weatherEl.append(cityDateEl);
 
-    var tempEl = $("<div>");
-    tempEl.addClass("list-item flex-row justify-space-between col-sm");
-    tempEl.text(`Temp: ${data.main.temp}`);
+    var tempEl = $("<div>")
+    .addClass("list-item flex-row justify-space-between col-sm")
+    .text(`Temp: ${data.main.temp}`);
     weatherEl.append(tempEl);
 
-    var humidityEl = $("<div>");
-    humidityEl.addClass("list-item flex-row justify-space-between col-sm");
-    humidityEl.text(`Humidity: ${data.main.humidity}`);
+    var humidityEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm")
+    .text(`Humidity: ${data.main.humidity}`);
     weatherEl.append(humidityEl);
 
-    var windSpeedEl = $("<div>");
-    windSpeedEl.addClass("list-item flex-row justify-space-between col-sm");
-    windSpeedEl.text(`Wind Speed: ${data.wind.speed}`);
+    var windSpeedEl = $("<div>")
+    .addClass("list-item flex-row justify-space-between col-sm")
+    .text(`Wind Speed: ${data.wind.speed}`);
     weatherEl.append(windSpeedEl);
 
-    var uvIndexEl = $("<div>");
-    uvIndexEl.addClass("list-item flex-row justify-space-between col-sm");
-    uvIndexEl.text(`UV Index INCOMPLETED`);
+    var uvIndexEl = $("<div>")
+    .addClass("list-item flex-row justify-space-between col-sm")
+    .attr("id","uv-index");
     weatherEl.append(uvIndexEl);
 
     displayWeatherEl.append(weatherEl);
+
+    return { 
+        lat: data.coord.lat, 
+        lon: data.coord.lon 
+    };
 };
 
 /**
@@ -179,9 +189,43 @@ var getIcon = function(iconID) {
  /**
  * 1.7 getUvIndex()
  */
-var getUvIndex = function() {
-
-};
+var getUVIndex = function( latitude, longitude){
+    var APIKEY = "904755abfca69992b8a848481a87baea";
+    var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?";
+    var queryParams = {};
+    queryParams.appid = APIKEY;
+    queryParams.lat = latitude;
+    queryParams.lon = longitude;
+  
+    apiUrl = apiUrl + $.param(queryParams);
+    console.log("-----------[ API URL ]------------------------");
+    console.log(apiUrl);
+    console.log("-----------------------------------------------");
+  
+    fetch(apiUrl)
+      .then(function (response) {
+          if (response.ok) {
+              response.json().then(function (data) {
+                  $("#uv-index").html(`UV Index ${data.value}`);
+  
+                  if(data.value > 5 ){
+                      $("#uv-index").addClass("badge badge-danger");
+                  }else if(data.value > 2){
+                      $("#uv-index").addClass("badge badge-warning");
+                  }else{
+                      $("#uv-index").addClass("badge badge-success");
+                  }
+  
+              });
+  
+          } else {
+              alert("Error: " + response.statusText);
+          }
+      })
+      .catch(function (error) {
+          alert("Unable to getUVIndex data!");
+      });
+  };
 
 
 
