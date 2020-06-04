@@ -150,42 +150,6 @@ a {
     z-index: 1;
 }
 
-nav.navbar {
-    position: relative;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    padding-bottom: 0px;
-    background-color: #fff;
-    padding-top: 0px;
-}
-
-nav.navbar .collapse {
-    display: flex;
-    flex-grow: 1;
-    align-items: center;
-    margin: 0 auto;
-    max-width: 960px;
-}
-
-.navbar-nav {
-    display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    margin-bottom: 0px;
-    list-style: none;
-    margin-top: 0px;
-}
-
-.m1-auto {
-    margin-left: auto !important;
-}
-
-.stop-watch {
-    margin-right: 50px;
-}
-
 .navbar-brand {
     color: #fff;
     font-family: "Montserrat";

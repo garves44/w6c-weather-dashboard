@@ -244,5 +244,6 @@ $(function(){
  */
 
 $("#submit-weather").on("click", citySearch);
+$(".saved-history").on("click", citySearch(this));
 
 });
