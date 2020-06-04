@@ -23,9 +23,9 @@
  *********************************************************/
 
 /* ===============[ 0. GLOBALS ]=========================*/
-var cityEl = document.getElementById("city");
-var displayForecastEl = document.getElementById("display-forecast");
-var displayWeatherEl = document.getElementById("display");
+var cityEl = $("#city");
+var displayForecastEl = $("#display-forecast");
+var displayWeatherEl = $("#display");
 /* ===============[ 1. Functions ]=========================*/
 
 /**
@@ -81,7 +81,7 @@ var getForecast = function (city) {
  */
 var citySearch = function (event) {
     event.preventDefault();
-    var city = cityEl.value.trim();
+    var city = cityEl.val().trim();
 
     if (city) {
         getWeather(city);
@@ -98,58 +98,40 @@ var citySearch = function (event) {
  */
 
 var displayWeather = function (data) {
-    console.log("data.weather.icon", data.weather[0].icon);
-    console.log("data.weather", data.weather[0]);
     var currentDate = moment.unix(data.dt).format("MM/DD/YYYY");
-
     var iconID = data.weather[0].icon;
-    var iconUrl = `http://openweathermap.org/img/wn/${iconID}@2x.png`;
 
+    // var uvIndexUrl =
 
-
-
-    var iconEl = $("<img>").attr("alt", "Weather icon").attr("src", iconUrl);
-
-    // iconEl = $("<span>").append(iconEl);
-    console.log("iconEl =",iconEl);
-    
-
-
-
-    var weatherEl = document.createElement("div");
-    weatherEl.classList = "list-item flex-row justify-space-between align-center";
+    var weatherEl = $("<div>");
+    weatherEl.addClass("list-item flex-row justify-space-between align-center");
 
     var cityDateEl = $("<h2>");
     cityDateEl.addClass("list-item flex-row justify-space-between col-sm").text(`${data.name} ${currentDate}`);
-    cityDateEl.append(iconEl);
-
-    // cityDateEl.classList = "list-item flex-row justify-space-between col-sm"
-    // cityDateEl.textContent = `${data.name} ${currentDate} ${iconEl}`
-    // cityDateEl.append(iconEl);
+    cityDateEl.append(getIcon(iconID));
     weatherEl.append(cityDateEl);
-    console.log("cityDateEl =", cityDateEl);
 
-    var tempEl = document.createElement("div");
-    tempEl.classList = "list-item flex-row justify-space-between col-sm"
-    tempEl.textContent = `Temp: ${data.main.temp}`;
-    weatherEl.appendChild(tempEl);
+    var tempEl = $("<div>");
+    tempEl.addClass("list-item flex-row justify-space-between col-sm");
+    tempEl.text(`Temp: ${data.main.temp}`);
+    weatherEl.append(tempEl);
 
-    var humidityEl = document.createElement("div");
-    humidityEl.classList = "list-item flex-row justify-space-between col-sm"
-    humidityEl.textContent = `Humidity: ${data.main.humidity}`;
-    weatherEl.appendChild(humidityEl);
+    var humidityEl = $("<div>");
+    humidityEl.addClass("list-item flex-row justify-space-between col-sm");
+    humidityEl.text(`Humidity: ${data.main.humidity}`);
+    weatherEl.append(humidityEl);
 
-    var windSpeedEl = document.createElement("div");
-    windSpeedEl.classList = "list-item flex-row justify-space-between col-sm"
-    windSpeedEl.textContent = `Wind Speed: ${data.wind.speed}`;
-    weatherEl.appendChild(windSpeedEl);
+    var windSpeedEl = $("<div>");
+    windSpeedEl.addClass("list-item flex-row justify-space-between col-sm");
+    windSpeedEl.text(`Wind Speed: ${data.wind.speed}`);
+    weatherEl.append(windSpeedEl);
 
-    var uvIndexEl = document.createElement("div");
-    uvIndexEl.classList = "list-item flex-row justify-space-between col-sm"
-    uvIndexEl.textContent = `UV Index INCOMPLETED`;
-    weatherEl.appendChild(uvIndexEl);
+    var uvIndexEl = $("<div>");
+    uvIndexEl.addClass("list-item flex-row justify-space-between col-sm");
+    uvIndexEl.text(`UV Index INCOMPLETED`);
+    weatherEl.append(uvIndexEl);
 
-    displayWeatherEl.appendChild(weatherEl);
+    displayWeatherEl.append(weatherEl);
 };
 
 /**
@@ -157,31 +139,48 @@ var displayWeather = function (data) {
  */
 var displayForecast = function (data) {
     for (var i = 0; i < data.list.length; i = i + 8) {
+        var iconID = data.list[i].weather[0].icon;
         // i + 8 because 3 hour increments. want to push 24 hours.
         var currentDate = moment.unix(data.list[i].dt).format("MM/DD/YYYY");
-        console.log("for loop has started and is on position", i);
-        var forecastEl = document.createElement("div");
-        forecastEl.classList = "list-item flex-row justify-space-between align-center";
+        
+        var forecastEl = $("<div>");
+        forecastEl.addClass("list-item flex-row justify-space-between align-center");
 
-        var dateEl = document.createElement("div");
-        dateEl.classList = "list-item flex-row justify-space-between col-sm"
-        dateEl.textContent = currentDate;
-        forecastEl.appendChild(dateEl);
+        var dateEl = $("<div>");
+        dateEl.addClass("list-item flex-row justify-space-between col-sm");
+        dateEl.text(currentDate);
+        forecastEl.append(dateEl);
 
-        // var iconEl =  NEEDS TO BE DONE STILL
+        dateEl.append(getIcon(iconID));
 
-        var tempEl = document.createElement("div");
-        tempEl.classList = "list-item flex-row justify-space-between col-sm"
-        tempEl.textContent = `Temp: ${data.list[i].main.temp}`;
-        forecastEl.appendChild(tempEl);
+        var tempEl = $("<div>");
+        tempEl.addClass("list-item flex-row justify-space-between col-sm");
+        tempEl.text(`Temp: ${data.list[i].main.temp}`);
+        forecastEl.append(tempEl);
 
-        var humidityEl = document.createElement("div");
-        humidityEl.classList = "list-item flex-row justify-space-between col-sm"
-        humidityEl.textContent = `Humidity: ${data.list[i].main.humidity}`;
-        forecastEl.appendChild(humidityEl);
+        var humidityEl = $("<div>");
+        humidityEl.addClass("list-item flex-row justify-space-between col-sm");
+        humidityEl.text(`Humidity: ${data.list[i].main.humidity}`);
+        forecastEl.append(humidityEl);
 
-        displayForecastEl.appendChild(forecastEl);
+        displayForecastEl.append(forecastEl);
     }
+};
+
+/**
+ * 1.6 getIcon()
+ */
+var getIcon = function(iconID) {
+    var iconUrl = `http://openweathermap.org/img/wn/${iconID}@2x.png`;
+    var iconEl = $("<img>").attr("alt", "Weather icon").attr("src", iconUrl);
+    return iconEl;
+};
+
+ /**
+ * 1.7 getUvIndex()
+ */
+var getUvIndex = function() {
+
 };
 
 
