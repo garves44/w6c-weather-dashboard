@@ -22,8 +22,6 @@
  *   2.1 Render Weather on ready
  *   2.2 Add click listeners (add, edit, delete, reset)
  * 
- * 3. Dead Code
- * 
  *********************************************************/
 
 /* ===============[ 0. GLOBALS ]=========================*/
