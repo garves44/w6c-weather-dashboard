@@ -49,6 +49,12 @@ var getWeather = function (city) {
                             lon
                         } = WeatherResults;
                         getUVIndex(lat, lon);
+                    }).then(function () {
+                        var city = cityEl.val().trim();
+                        // var unlocked = {key};
+                        saveSearch(unlocked, city);
+                    }).then(function (data) {
+                        loadHistory();
                     });
             } else {
                 alert("Error: " + response.statusText);
@@ -84,8 +90,6 @@ var getForecast = function (city) {
  * 1.3 citySearch()
  */
 var citySearch = function (event) {
-    // prevents page from reloading
-    event.preventDefault();
     // removes old search
     $(".remover").empty();
     var city = cityEl.val().trim();
@@ -93,9 +97,6 @@ var citySearch = function (event) {
     if (city) {
         getWeather(city);
         getForecast(city);
-        saveSearch(city);
-        // Load existing search history
-        loadHistory();
     } else {
         alert("Please enter a city name!");
     }
@@ -132,7 +133,8 @@ var displayWeather = function (data) {
 
     return {
         lat: data.coord.lat,
-        lon: data.coord.lon
+        lon: data.coord.lon,
+        key: data.name
     };
 };
 
@@ -210,40 +212,45 @@ var getUVIndex = function (latitude, longitude) {
 /**
  * 1.8 saveSearch()
  */
-var saveSearch = function (city) {
-    var searchHistoryArr = localStorage.getItem("city-name");
-    localStorage.setItem("city-name", `${searchHistoryArr} ${city}`);
+var saveSearch = function (unlocked, city) {
+    var key = unlocked.name;
+    console.log("key ===========", key);
+    console.log("city========",city);
+    var searchHistoryArr = localStorage.getItem(key);
+    if (searchHistoryArr === null) {
+        localStorage.setItem(key, city);
+    } else {
+        localStorage.setItem(key, `${searchHistoryArr} ${city}`);
+    }
 };
 /**
  * 1.9 loadHistory()
  */
-var loadHistory = function () {
-    var currentSearchHistory = [];
-    currentSearchHistory = localStorage.getItem("city-name");
+// var loadHistory = function () {
+//     var currentSearchHistory = [];
+//     currentSearchHistory = localStorage.getItem("city-name");
 
-    if (currentSearchHistory.length === 0) {
-        return;
-    };
+//     if (currentSearchHistory.length === 0) {
+//         return;
+//     };
 
-    for (var i = 0; i < currentSearchHistory.length; i++) {
-        var cityName = Object.values(currentSearchHistory)[i];
-        var name = cityName.split(",");
-        var historyEl = $("<btn>").addClass("bg-secondary text-light saved-history remover").text(name);
-        searchHistoryEl.append(historyEl);
-    }
-};
+//     for (var i = 0; i < currentSearchHistory.length; i++) {
+//         var cityName = Object.values(currentSearchHistory)[i];
+//         var name = cityName.split(",");
+//         var historyEl = $("<btn>").addClass("bg-secondary text-light saved-history remover").text(name);
+//         searchHistoryEl.append(historyEl);
+//     }
+// };
 
 /* ===============[ 2. Document Ready ]=========================*/
-$(function(){
+$(function () {
     /**
- * 2.1 Render Weather on ready
- */
-
+     * 2.1 Render Weather on ready
+     */
+});
 /**
  * 2.2 Add click listeners (add, edit, delete, reset)
  */
 
 $("#submit-weather").on("click", citySearch);
 $(".saved-history").on("click", citySearch(this));
-
-});
