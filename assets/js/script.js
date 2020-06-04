@@ -2,7 +2,7 @@
  * Weather Dashboard
  * @package w6c-Weather-Dashboard
  * @author Jeremy C Collins
- * @version develop
+ * @version development
  * @license none (public domain)
  * 
  * ===============[ TABLE OF CONTENTS ]===================
@@ -35,8 +35,6 @@ var searchHistoryEl = $("#search-history");
  * 1.1 getWeather()
  */
 var getWeather = function (city) {
-
-
     var apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
 
     fetch(apiUrl)
@@ -65,8 +63,6 @@ var getWeather = function (city) {
  * 1.2 getForecast()
  */
 var getForecast = function (city) {
-
-
     var apiUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
 
     fetch(apiUrl)
@@ -238,8 +234,8 @@ var loadHistory = function () {
 };
 
 /* ===============[ 2. Document Ready ]=========================*/
-
-/**
+$(function(){
+    /**
  * 2.1 Render Weather on ready
  */
 
@@ -248,3 +244,5 @@ var loadHistory = function () {
  */
 
 $("#submit-weather").on("click", citySearch);
+
+});
