@@ -2,7 +2,7 @@
  * Weather Dashboard
  * @package w6c-Weather-Dashboard
  * @author Jeremy C Collins
- * @version development
+ * @version Final
  * @license none (public domain)
  * 
  * ===============[ TABLE OF CONTENTS ]===================
@@ -16,11 +16,9 @@
  *   1.6 getIcon()
  *   1.7 getUvIndex()
  *   1.8 saveSearch()
- *   1.9 loadHistory()
  * 
  * 2. Document Ready
- *   2.1 Render Weather on ready
- *   2.2 Add click listeners (add, edit, delete, reset)
+ *   2.1 Add click listeners (add, edit, delete, reset)
  * 
  *********************************************************/
 
@@ -29,6 +27,7 @@ var cityEl = $("#city");
 var displayForecastEl = $("#display-forecast");
 var displayWeatherEl = $("#display");
 var searchHistoryEl = $("#search-history");
+var recentCity = (localStorage.getItem("city-names") === null) ? [] : JSON.parse(localStorage.getItem("city-names"));
 /* ===============[ 1. Functions ]=========================*/
 
 /**
@@ -46,15 +45,9 @@ var getWeather = function (city) {
                     }).then(function (WeatherResults) {
                         let {
                             lat,
-                            lon
+                            lon,
                         } = WeatherResults;
                         getUVIndex(lat, lon);
-                    }).then(function () {
-                        var city = cityEl.val().trim();
-                        // var unlocked = {key};
-                        saveSearch(unlocked, city);
-                    }).then(function (data) {
-                        loadHistory();
                     });
             } else {
                 alert("Error: " + response.statusText);
@@ -89,18 +82,17 @@ var getForecast = function (city) {
 /**
  * 1.3 citySearch()
  */
-var citySearch = function (event) {
+var citySearch = function (city) {
     // removes old search
     $(".remover").empty();
-    var city = cityEl.val().trim();
 
     if (city) {
         getWeather(city);
         getForecast(city);
     } else {
-        alert("Please enter a city name!");
+        return;
     }
-
+    saveSearch(city);
 };
 
 /**
@@ -134,7 +126,6 @@ var displayWeather = function (data) {
     return {
         lat: data.coord.lat,
         lon: data.coord.lon,
-        key: data.name
     };
 };
 
@@ -212,45 +203,46 @@ var getUVIndex = function (latitude, longitude) {
 /**
  * 1.8 saveSearch()
  */
-var saveSearch = function (unlocked, city) {
-    var key = unlocked.name;
-    console.log("key ===========", key);
-    console.log("city========",city);
-    var searchHistoryArr = localStorage.getItem(key);
-    if (searchHistoryArr === null) {
-        localStorage.setItem(key, city);
-    } else {
-        localStorage.setItem(key, `${searchHistoryArr} ${city}`);
+var saveSearch = function (city) {
+    cityEl.empty();
+    searchHistoryEl.empty();
+
+    if(city === ""){
+        alert("Enter City Name!");// prevent empty search history
+        return;
     }
+    console.log("RECENTCITY  ============", recentCity);
+    if (recentCity.indexOf(city) === -1) {
+        recentCity.push(city);
+    }
+    console.log("RECENTCITY  ============", recentCity);
+    if (recentCity.length > 0) {
+        searchHistoryEl.show();
+        var searchCity = $("<h4>").append("Recent Cities").addClass("remover");
+        searchHistoryEl.append(searchCity);
+        for (var i = 0; i < recentCity.length; i++){
+            var btn = $("<btn>").addClass("btn btn-secondary remover").attr("data-topic-index", i).text(recentCity[i]);
+            searchHistoryEl.append(btn);  
+        }
+    } else {
+        searchHistoryEl.hide();
+    }
+    localStorage.setItem("city-names", JSON.stringify(recentCity));
 };
-/**
- * 1.9 loadHistory()
- */
-// var loadHistory = function () {
-//     var currentSearchHistory = [];
-//     currentSearchHistory = localStorage.getItem("city-name");
-
-//     if (currentSearchHistory.length === 0) {
-//         return;
-//     };
-
-//     for (var i = 0; i < currentSearchHistory.length; i++) {
-//         var cityName = Object.values(currentSearchHistory)[i];
-//         var name = cityName.split(",");
-//         var historyEl = $("<btn>").addClass("bg-secondary text-light saved-history remover").text(name);
-//         searchHistoryEl.append(historyEl);
-//     }
-// };
 
 /* ===============[ 2. Document Ready ]=========================*/
 $(function () {
-    /**
-     * 2.1 Render Weather on ready
-     */
-});
 /**
- * 2.2 Add click listeners (add, edit, delete, reset)
+ * 2.1 Add click listeners (add, edit, delete, reset)
  */
+$("#submit-weather").on("click", function(){
+    var city = cityEl.val().trim();
+    citySearch(city);
+});
+searchHistoryEl.on("click", '.btn-secondary', function(){
+    var city = $(this).text();
+    city = (city !== undefined) ? city.trim() : "";
+    citySearch(city);
+});
 
-$("#submit-weather").on("click", citySearch);
-$(".saved-history").on("click", citySearch(this));
+});
