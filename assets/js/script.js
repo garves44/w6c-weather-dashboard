@@ -36,7 +36,7 @@ var recentCity = (localStorage.getItem("city-names") === null) ? [] : JSON.parse
 var getWeather = function (city) {
     var apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
 
-    fetch(apiUrl)
+    return fetch(apiUrl)
         .then(function (response) {
             if (response.ok) {
                 response.json()
@@ -138,16 +138,16 @@ var displayForecast = function (data) {
         // i + 8 because 3 hour increments. want to push 24 hours.
         var currentDate = moment.unix(data.list[i].dt).format("MM/DD/YYYY");
 
-        var forecastEl = $("<div>").addClass("remover list-item flex-row justify-space-between align-center");
+        var forecastEl = $("<div>").addClass("remover bg-primary forecast-border list-item flex-row justify-space-between align-center");
 
-        var dateEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm").text(currentDate);
+        var dateEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm text-light bold").text(currentDate);
         forecastEl.append(dateEl);
         dateEl.append(getIcon(iconID));
 
-        var tempEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm").text(`Temp: ${data.list[i].main.temp}`);
+        var tempEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm text-light").text(`Temp: ${data.list[i].main.temp}`);
         forecastEl.append(tempEl);
 
-        var humidityEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm").text(`Humidity: ${data.list[i].main.humidity}`);
+        var humidityEl = $("<div>").addClass("list-item flex-row justify-space-between col-sm text-light").text(`Humidity: ${data.list[i].main.humidity}`);
         forecastEl.append(humidityEl);
 
         displayForecastEl.append(forecastEl);
@@ -182,9 +182,9 @@ var getUVIndex = function (latitude, longitude) {
                 response.json().then(function (data) {
                     $("#uv-index").html(`UV Index ${data.value}`);
 
-                    if (data.value > 5) {
+                    if (data.value > 8) {
                         $("#uv-index").addClass("badge badge-danger");
-                    } else if (data.value > 2) {
+                    } else if (data.value > 5) {
                         $("#uv-index").addClass("badge badge-warning");
                     } else {
                         $("#uv-index").addClass("badge badge-success");

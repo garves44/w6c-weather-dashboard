@@ -249,12 +249,21 @@ main {
     margin-bottom: 0px;
 }
 
+.forecast-border {
+    border: grey;
+    border-width: thick;
+    margin: auto;
+}
+
 .saved-history {
     padding: 2px;
     margin: 2px;
     justify-content: center;
-    text-align: center;
-    
+    text-align: center;  
+}
+
+.bold {
+    font-weight: bold;
 }
 
 /*------------------------------------------------------*/
