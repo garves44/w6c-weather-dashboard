@@ -34,7 +34,7 @@ var recentCity = (localStorage.getItem("city-names") === null) ? [] : JSON.parse
  * 1.1 getWeather()
  */
 var getWeather = function (city) {
-    var apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
+    var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
 
     return fetch(apiUrl)
         .then(function (response) {
@@ -62,7 +62,7 @@ var getWeather = function (city) {
  * 1.2 getForecast()
  */
 var getForecast = function (city) {
-    var apiUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
+    var apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=imperial&APPID=904755abfca69992b8a848481a87baea`;
 
     fetch(apiUrl)
         .then(function (response) {
@@ -158,7 +158,7 @@ var displayForecast = function (data) {
  * 1.6 getIcon()
  */
 var getIcon = function (iconID) {
-    var iconUrl = `http://openweathermap.org/img/wn/${iconID}@2x.png`;
+    var iconUrl = `https://openweathermap.org/img/wn/${iconID}@2x.png`;
     var iconEl = $("<img>").attr("alt", "Weather icon").attr("src", iconUrl);
     return iconEl;
 };
@@ -168,7 +168,7 @@ var getIcon = function (iconID) {
  */
 var getUVIndex = function (latitude, longitude) {
     var APIKEY = "904755abfca69992b8a848481a87baea";
-    var apiUrl = "http://api.openweathermap.org/data/2.5/uvi?";
+    var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?";
     var queryParams = {};
     queryParams.appid = APIKEY;
     queryParams.lat = latitude;
